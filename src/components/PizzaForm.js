@@ -1,10 +1,11 @@
 import React from 'react';
 
 export default function PizzaForm(props) {
-  const {values, change} = props
+  const {values, change, submit} = props
   console.log("PizzaForm -> values", values)
 
   const onChange = (evt) =>{
+    console.log("CHANGE: ", evt.target.value)
     const {name, value, type, checked} = evt.target;
     const valueToUse = type === 'checkbox' ? checked : value;
     change(name, valueToUse)
@@ -12,17 +13,17 @@ export default function PizzaForm(props) {
 
   const onSubmit = (evt) => {
     evt.preventDefault();
-   // submit();
+    submit();
   };
 
   return (
-    <form >
+    <form onSubmit={onSubmit}>
       <h2>Create Your Pizza!</h2>
 
       <label>
         Order Name
         <input
-          name='ordername'
+          name='orderName'
           type='text'
           value={values.orderName}
           onChange={onChange}
@@ -31,7 +32,7 @@ export default function PizzaForm(props) {
 
       <label>
         Choose crust size
-        <select onChange={onChange} value={values.pizzaSizeDrp} name='size' >
+        <select onChange={onChange} value={values.pizzaSizeDrp} name='pizzaSizeDrp' >
           <option value='---Select One---'>'---Select One---'</option>
           <option value='Small'>'Small'</option>
           <option value='Medium'>'Medium'</option>
@@ -82,7 +83,7 @@ export default function PizzaForm(props) {
       <label>
         Special Instructions
         <input
-        name='special'
+        name='specialInst'
         type='text'
         value={values.specialInst}
           onChange={onChange}

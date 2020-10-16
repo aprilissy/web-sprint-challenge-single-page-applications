@@ -17,15 +17,27 @@ const initialForm = {
   pineapple: false,
 }
 
-const disabled = true;
+const initialErrors = {
+  orderName: '',
+  pizzaSizeDrp: '',
+  specialInst: '',
+  mushrooms: false,
+  spinach: false,
+  sausage: false,
+  pineapple: false,
+}
+
+//const disabled = true;
 
 
 const App = () => {
 
   const [order, setOrder] = useState([]);
 
-  const [formValues, setFormValues] = useState(initialForm)
+  const [formValues, setFormValues] = useState(initialForm);
+  console.log("FORM: ", formValues)
 
+  const [formErrors, setFormErrors] = useState(initialErrors);
 
   // const submitPizza = () => {
   //   let newPizza = {
@@ -34,30 +46,35 @@ const App = () => {
   // }
 
   const postNewOrder = (newOrder) => {
+  console.log("postNewOrder -> newOrder", newOrder)
+    
     axios
-      .post('https://reqres.in', newOrder)
+      .post('https://reqres.in/api/orders', newOrder)
       .then((res) => {
+        console.log("ORDER SET")
         setOrder([res.data, ...order]);
         setFormValues(initialForm);
       })
       .catch((err) => {
-        debugger
+        console.log("ERR: ", err)
       });
   };
 
   const inputChange = (name, value) => {
+    console.log(name, value)
     yup
       .reach(validation, name)
       .validate(value)
       .then(() => {
-        setFormValues({
-          ...formValues,
+        console.log("SETTING: ", name, value)
+        setFormErrors({
+          ...formErrors,
           [name]: '',
         })
       })
       .catch((err) => {
-        setFormValues({
-          ...formValues,
+        setFormErrors({
+          ...formErrors,
           [name]: err.errors[0],
         });
       });
@@ -65,7 +82,7 @@ const App = () => {
       setFormValues({
         ...formValues,
         [name]: value,
-      })
+      });
 
   };
 
@@ -73,10 +90,12 @@ const App = () => {
     const newOrder = {
       orderName: formValues.orderName.trim(),
       specialInst: formValues.specialInst.trim(),
+      pizzaSizeDrp: formValues.pizzaSizeDrp,
       toppings: ['mushrooms', 'spinach', 'sausage', 'pineapple'].filter(
         (toppings) => formValues[toppings]
       )
     }
+    postNewOrder(newOrder);
   }
 
 
@@ -96,6 +115,7 @@ const App = () => {
           <PizzaForm 
             values={formValues}
             change={inputChange}
+            submit={formSubmit}
           />
         </Route>
 
