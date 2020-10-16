@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { Route, Link, Switch } from 'react-router-dom';
 import * as yup from 'yup';
+import axios from 'axios';
 
 import Home from './components/Home';
 import PizzaForm from './components/PizzaForm';
-import validation from './components/Validation'
+import validation from './components/Validation';
 
 const initialForm = {
   orderName: '',
   pizzaSizeDrp: '',
   specialInst: '',
-  topOne: false,
-  topTwo: false,
-  topThree: false,
-  topFour: false,
+  mushrooms: false,
+  spinach: false,
+  sausage: false,
+  pineapple: false,
 }
 
 const disabled = true;
@@ -32,15 +33,51 @@ const App = () => {
   //   }
   // }
 
-  yup
-    .reach(validation, orderName)
-    .validate(value)
-    .then(() => {
+  const postNewOrder = (newOrder) => {
+    axios
+      .post('https://reqres.in', newOrder)
+      .then((res) => {
+        setOrder([res.data, ...order]);
+        setFormValues(initialForm);
+      })
+      .catch((err) => {
+        debugger
+      });
+  };
+
+  const inputChange = (name, value) => {
+    yup
+      .reach(validation, name)
+      .validate(value)
+      .then(() => {
+        setFormValues({
+          ...formValues,
+          [name]: '',
+        })
+      })
+      .catch((err) => {
+        setFormValues({
+          ...formValues,
+          [name]: err.errors[0],
+        });
+      });
+
       setFormValues({
         ...formValues,
-        [orderName]: '',
+        [name]: value,
       })
-    })
+
+  };
+
+  const formSubmit = () => {
+    const newOrder = {
+      orderName: formValues.orderName.trim(),
+      specialInst: formValues.specialInst.trim(),
+      toppings: ['mushrooms', 'spinach', 'sausage', 'pineapple'].filter(
+        (toppings) => formValues[toppings]
+      )
+    }
+  }
 
 
   return (
@@ -56,14 +93,21 @@ const App = () => {
 
       <Switch>
         <Route path='/pizza-form'>
-          <PizzaForm />
+          <PizzaForm 
+            values={formValues}
+            change={inputChange}
+          />
         </Route>
 
         <Route path='/'>
           <Home />
         </Route>
       </Switch>
+      <pre>
+       {JSON.stringify(order)}
+      </pre>
     </>
+    
   );
 };
 export default App;

@@ -1,12 +1,13 @@
 import React from 'react';
 
-export default function PizzaForm() {
-  
+export default function PizzaForm(props) {
+  const {values, change} = props
+  console.log("PizzaForm -> values", values)
 
   const onChange = (evt) =>{
     const {name, value, type, checked} = evt.target;
     const valueToUse = type === 'checkbox' ? checked : value;
-    //change(name, valueToUse)
+    change(name, valueToUse)
   };
 
   const onSubmit = (evt) => {
@@ -23,13 +24,14 @@ export default function PizzaForm() {
         <input
           name='ordername'
           type='text'
-
+          value={values.orderName}
+          onChange={onChange}
         />
       </label>
 
       <label>
         Choose crust size
-        <select name='size' >
+        <select onChange={onChange} value={values.pizzaSizeDrp} name='size' >
           <option value='---Select One---'>'---Select One---'</option>
           <option value='Small'>'Small'</option>
           <option value='Medium'>'Medium'</option>
@@ -44,6 +46,8 @@ export default function PizzaForm() {
           <input
             name='mushrooms'
             type='checkbox'
+            checked={values.mushrooms}
+            onChange={onChange}
           />
         </label>
         <label>
@@ -51,6 +55,8 @@ export default function PizzaForm() {
           <input
             name='spinach'
             type='checkbox'
+            checked={values.spinach}
+            onChange={onChange}
           />
         </label>
         <label>
@@ -58,6 +64,8 @@ export default function PizzaForm() {
           <input
             name='sausage'
             type='checkbox'
+            checked={values.sausage}
+            onChange={onChange}
           />
         </label>
         <label>
@@ -65,6 +73,8 @@ export default function PizzaForm() {
           <input
             name='pineapple'
             type='checkbox'
+            checked={values.pineapple}
+            onChange={onChange}
           />
         </label>
       </div>  
@@ -74,6 +84,8 @@ export default function PizzaForm() {
         <input
         name='special'
         type='text'
+        value={values.specialInst}
+          onChange={onChange}
         />
       </label>
 
