@@ -90,8 +90,8 @@ export default function PizzaForm(props) {
         />
       </label>
 
-      <div className='submit'>
-        <button>Add to Order</button>
+      <div>
+        <button id='submit'>Add to Order</button>
       </div>
     </form>
   )
